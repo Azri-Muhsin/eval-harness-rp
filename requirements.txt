@@ -1,0 +1,13 @@
+unsloth
+transformers
+trl
+peft
+accelerate
+bitsandbytes
+datasets
+scikit-learn
+pandas
+pyyaml
+tqdm
+openai
+huggingface_hub

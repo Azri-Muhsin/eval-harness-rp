@@ -1,0 +1,181 @@
+project_drive_dir: /content/drive/MyDrive/healthcare-intent-project
+base_output_dir: /content/drive/MyDrive/healthcare-intent-project/outputs/runs
+prediction_output_dir: /content/drive/MyDrive/healthcare-intent-project/outputs/predictions
+report_output_dir: /content/drive/MyDrive/healthcare-intent-project/outputs/reports
+results_file: /content/drive/MyDrive/healthcare-intent-project/outputs/results.csv
+
+hf_namespace: research-mates
+push_to_hf_default: false
+hf_private: true
+
+allowed_labels:
+  - Treatment_Procedure
+  - Vaccine_Information
+  - Facility_Locator
+  - Disease_Information
+  - Provider_Locator
+  - General_Health_Education
+  - Emergency
+  - Test_Diagnostics
+  - Insurance_Information
+
+default_train:
+  batch_size: 8
+  grad_accum: 2
+  learning_rate: 0.0002
+  lora_r: 16
+  lora_dropout: 0
+  epochs: 2
+  save_steps: 500
+  eval_steps: 250
+  weight_decay: 0.01
+
+experiments:
+  # -------------------------
+  # Stage 1: dataset size
+  # -------------------------
+  - id: qwen17_1400_label
+    group: dataset_size
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_1400_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  - id: qwen17_2800_label
+    group: dataset_size
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_2800_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  - id: qwen17_7000_label
+    group: dataset_size
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_7000_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  # -------------------------
+  # Stage 2: language type ablation
+  # -------------------------
+  - id: qwen17_english_only_label
+    group: language_type
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_english_only_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  - id: qwen17_native_si_ta_label
+    group: language_type
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_native_si_ta_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  - id: qwen17_romanized_code_mixed_label
+    group: language_type
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_romanized_code_mixed_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  # -------------------------
+  # Stage 3: balance ablations
+  # -------------------------
+  - id: qwen17_intent_balanced_label
+    group: balance
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_intent_balanced_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  - id: qwen17_language_balanced_label
+    group: balance
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_language_balanced_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  # -------------------------
+  # Stage 4: reasoning ablation
+  # -------------------------
+  - id: qwen17_7000_reasoning
+    group: reasoning
+    model_name: Qwen/Qwen3-1.7B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_7000_reasoning.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: reasoning
+    max_seq_length: 768
+    max_new_tokens: 200
+
+  # -------------------------
+  # Stage 5: model comparison
+  # -------------------------
+  - id: cpt_qwen17_7000_label
+    group: model_comparison
+    model_name: research-mates/Qwen3-1.7B-SinTam-Extended-Replacement
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_7000_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+
+  - id: qwen4b_7000_label
+    group: model_comparison
+    model_name: Qwen/Qwen3-4B
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_7000_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+    batch_size: 4
+    grad_accum: 4
+
+  - id: llama32_3b_7000_label
+    group: model_comparison
+    model_name: meta-llama/Llama-3.2-3B-Instruct
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_7000_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
+    batch_size: 4
+    grad_accum: 4
+
+  - id: gemma2_2b_7000_label
+    group: model_comparison
+    model_name: google/gemma-2-2b-it
+    train_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/train_7000_label.jsonl
+    val_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/val.jsonl
+    test_file: /content/drive/MyDrive/healthcare-intent-project/data/processed/test.jsonl
+    sft_type: label
+    max_seq_length: 512
+    max_new_tokens: 100
